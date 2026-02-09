@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "TwoHeadUtilities",
+	"Description": "Editor Utilities",
+	"Category": "Other",
+	"CreatedBy": "InsaneDoggo",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "TwoHeadUtilities",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}

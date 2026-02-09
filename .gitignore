@@ -1,0 +1,57 @@
+# =========================
+# Unreal Engine
+# =========================
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# Packaging / builds
+Build/
+Dist/
+PackagedBuilds/
+
+# Logs & crash reports
+*.log
+*.dmp
+
+# Unreal auto-generated project files
+*.opensdf
+*.sdf
+*.sln
+*.xcodeproj
+*.xcworkspace
+
+# Plugin build outputs
+Plugins/**/Binaries/
+Plugins/**/Intermediate/
+
+
+# =========================
+# IDE / Tooling
+# =========================
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.opendb
+.vsconfig
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+
+# =========================
+# OS junk
+# =========================
+Thumbs.db
+.DS_Store
+desktop.ini
