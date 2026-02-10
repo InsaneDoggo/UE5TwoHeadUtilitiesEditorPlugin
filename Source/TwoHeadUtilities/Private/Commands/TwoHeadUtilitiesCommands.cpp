@@ -1,6 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
-#include "TwoHeadUtilitiesCommands.h"
+#include "Commands/TwoHeadUtilitiesCommands.h"
 
 #define LOCTEXT_NAMESPACE "FTwoHeadUtilitiesModule"
 

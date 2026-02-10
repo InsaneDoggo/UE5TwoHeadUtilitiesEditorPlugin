@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 using UnrealBuildTool;
 
 public class TwoHeadUtilities : ModuleRules
@@ -43,7 +41,8 @@ public class TwoHeadUtilities : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				// ... add private dependencies that you statically link with here ...	
+				"LevelEditor",
+				"TypedElementRuntime",
 			}
 			);
 		
