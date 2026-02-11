@@ -4,6 +4,7 @@
 
 #include "LevelEditor.h"
 #include "LevelEditorSubsystem.h"
+#include "Selection.h"
 #include "Commands/TwoHeadUtilitiesCommands.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Elements/Framework/TypedElementSelectionSet.h"
@@ -25,42 +26,49 @@ void FThuEditorActions::Initialize()
 
 	PluginCommands->MapAction(
 		FTwoHeadUtilitiesCommands::Get().PluginAction,
-		FExecuteAction::CreateRaw(this, &FThuEditorActions::PluginButtonClicked),
+		FExecuteAction::CreateRaw(this, &FThuEditorActions::OnAction_SelectHismParent),
 		FCanExecuteAction());
 
 	// Add support for Viewport hotkeys	
 	TSharedPtr<FUICommandList> CommandList = GetLevelEditorModule().GetGlobalLevelEditorActions();
-	
+
 	CommandList->MapAction(
 		FTwoHeadUtilitiesCommands::Get().PluginAction,
-		FExecuteAction::CreateRaw(this, &FThuEditorActions::PluginButtonClicked),
+		FExecuteAction::CreateRaw(this, &FThuEditorActions::OnAction_SelectHismParent),
 		FCanExecuteAction()
 	);
 }
 
 void FThuEditorActions::Deinitialize()
-{	
+{
 	// Remove support for Viewport hotkeys
 	TSharedPtr<FUICommandList> CommandList = GetLevelEditorModule().GetGlobalLevelEditorActions();
 	CommandList->UnmapAction(FTwoHeadUtilitiesCommands::Get().PluginAction);
-		
+
 	FTwoHeadUtilitiesCommands::Unregister();
 }
 
-void FThuEditorActions::PluginButtonClicked()
-{	
-	UE_LOG(LogTemp, Warning, TEXT("THUCommandManager::PluginButtonClicked"));
-	
+void FThuEditorActions::OnAction_SelectHismParent()
+{
+	UE_LOG(LogTemp, Warning, TEXT("FThuEditorActions::OnAction_SelectHismParent"));
+
 	if (!GEditor) return;
-	
+
 	// Test Settings
-	UThuPluginEditorSettingsPage* DevSettings = GetMutableDefault<UThuPluginEditorSettingsPage>();
-	UE_LOG(LogTemp, Warning, TEXT("DevSettings: %s"), DevSettings->bEnabled ? TEXT("Enabled") : TEXT("Disabled"));
+	UThuPluginEditorSettingsPage* SettingsPage = GetMutableDefault<UThuPluginEditorSettingsPage>();
+	UE_LOG(LogTemp, Warning, TEXT("SettingsPage: %s"), SettingsPage->bEnabled ? TEXT("Enabled") : TEXT("Disabled"));
 
 	UTypedElementSelectionSet* SelectionSet = GEditor->GetEditorSubsystem<ULevelEditorSubsystem>()->GetSelectionSet();
-	if (!SelectionSet) return;
+	if (!SelectionSet)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SelectionSet is NULL"));
+		return;
+	}
 
 	TArray<FScriptTypedElementHandle> SelectedElementHandles = SelectionSet->K2_GetSelectedElementHandles();
+
+	bool bFoundHismComponent = false;
+	AActor* ActorToSelect = nullptr;
 
 	for (auto ElementHandle : SelectedElementHandles)
 	{
@@ -77,9 +85,28 @@ void FThuEditorActions::PluginButtonClicked()
 			continue;
 		}
 
+		bFoundHismComponent = true;
 		auto* InstancedStaticMeshComponent = SMInstance.GetISMComponent();
 
 		UE_LOG(LogTemp, Warning, TEXT("Selected ISM Component: %s"), *InstancedStaticMeshComponent->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("Selected ISM Parent: %s"), *InstancedStaticMeshComponent->GetOwner()->GetName());
+
+		ActorToSelect = InstancedStaticMeshComponent->GetOwner();
+	}
+
+	if (!bFoundHismComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HierarchicalInstancedStaticMeshComponent wasn't found in selection set"));
+	}
+
+	if (ActorToSelect)
+	{
+		const FScopedTransaction Transaction(LOCTEXT("ClickingOnActor", "Clicking on Actor in Data Layer"));
+		GEditor->GetSelectedActors()->Modify();
+		GEditor->SelectNone(false, true);
+		GEditor->SelectActor(ActorToSelect, true,true, true);
+		GEditor->NoteSelectionChange();
+		// GEditor->MoveViewportCamerasToActor(*ActorToSelect, /*bActiveViewportOnly*/false);
 	}
 }
 

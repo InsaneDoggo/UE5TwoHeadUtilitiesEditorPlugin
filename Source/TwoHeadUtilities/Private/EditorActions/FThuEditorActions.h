@@ -8,7 +8,7 @@ public:
 	void Initialize();
 	void Deinitialize();
 	
-	void PluginButtonClicked();
+	void OnAction_SelectHismParent();
 	
 private:	
 	TSharedPtr<FUICommandList> PluginCommands;	
