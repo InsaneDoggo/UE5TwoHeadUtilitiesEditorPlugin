@@ -1,7 +1,11 @@
+// Copyright (c) 2026 InsaneDoggo. All rights reserved.
+
 #pragma once
 
 #include "Modules/ModuleManager.h"
 
+class FSettingsManager;
+class ISettingsSection;
 class FToolBarBuilder;
 class FMenuBuilder;
 class FThuEditorActions;
@@ -14,4 +18,5 @@ public:
 
 private:
 	TUniquePtr<FThuEditorActions> EditorActions;
+	TUniquePtr<FSettingsManager> SettingsManager;
 };

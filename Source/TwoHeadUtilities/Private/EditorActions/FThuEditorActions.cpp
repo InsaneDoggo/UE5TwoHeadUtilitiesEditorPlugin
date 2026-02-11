@@ -1,11 +1,21 @@
+// Copyright (c) 2026 InsaneDoggo. All rights reserved.
+
 #include "FThuEditorActions.h"
+
+#include "LevelEditor.h"
 #include "LevelEditorSubsystem.h"
 #include "Commands/TwoHeadUtilitiesCommands.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Elements/Framework/TypedElementSelectionSet.h"
 #include "Elements/SMInstance/SMInstanceElementData.h"
+#include "SettingsPage/ThuPluginEditorSettingsPage.h"
 
 #define LOCTEXT_NAMESPACE "FTwoHeadUtilitiesModule"
+
+static FLevelEditorModule& GetLevelEditorModule()
+{
+	return FModuleManager::LoadModuleChecked<FLevelEditorModule>("LevelEditor");
+}
 
 void FThuEditorActions::Initialize()
 {
@@ -18,14 +28,22 @@ void FThuEditorActions::Initialize()
 		FExecuteAction::CreateRaw(this, &FThuEditorActions::PluginButtonClicked),
 		FCanExecuteAction());
 
-	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FThuEditorActions::RegisterMenus));
+	// Add support for Viewport hotkeys	
+	TSharedPtr<FUICommandList> CommandList = GetLevelEditorModule().GetGlobalLevelEditorActions();
+	
+	CommandList->MapAction(
+		FTwoHeadUtilitiesCommands::Get().PluginAction,
+		FExecuteAction::CreateRaw(this, &FThuEditorActions::PluginButtonClicked),
+		FCanExecuteAction()
+	);
 }
 
 void FThuEditorActions::Deinitialize()
-{
-	UToolMenus::UnRegisterStartupCallback(this);
-	UToolMenus::UnregisterOwner(this);
-	
+{	
+	// Remove support for Viewport hotkeys
+	TSharedPtr<FUICommandList> CommandList = GetLevelEditorModule().GetGlobalLevelEditorActions();
+	CommandList->UnmapAction(FTwoHeadUtilitiesCommands::Get().PluginAction);
+		
 	FTwoHeadUtilitiesCommands::Unregister();
 }
 
@@ -34,6 +52,10 @@ void FThuEditorActions::PluginButtonClicked()
 	UE_LOG(LogTemp, Warning, TEXT("THUCommandManager::PluginButtonClicked"));
 	
 	if (!GEditor) return;
+	
+	// Test Settings
+	UThuPluginEditorSettingsPage* DevSettings = GetMutableDefault<UThuPluginEditorSettingsPage>();
+	UE_LOG(LogTemp, Warning, TEXT("DevSettings: %s"), DevSettings->bEnabled ? TEXT("Enabled") : TEXT("Disabled"));
 
 	UTypedElementSelectionSet* SelectionSet = GEditor->GetEditorSubsystem<ULevelEditorSubsystem>()->GetSelectionSet();
 	if (!SelectionSet) return;
@@ -58,31 +80,6 @@ void FThuEditorActions::PluginButtonClicked()
 		auto* InstancedStaticMeshComponent = SMInstance.GetISMComponent();
 
 		UE_LOG(LogTemp, Warning, TEXT("Selected ISM Component: %s"), *InstancedStaticMeshComponent->GetName());
-	}
-}
-
-void FThuEditorActions::RegisterMenus()
-{
-	// Owner will be used for cleanup in call to UToolMenus::UnregisterOwner
-	FToolMenuOwnerScoped OwnerScoped(this);
-
-	{
-		UToolMenu* Menu = UToolMenus::Get()->ExtendMenu("LevelEditor.MainMenu.Window");
-		{
-			FToolMenuSection& Section = Menu->FindOrAddSection("WindowLayout");
-			Section.AddMenuEntryWithCommandList(FTwoHeadUtilitiesCommands::Get().PluginAction, PluginCommands);
-		}
-	}
-
-	{
-		UToolMenu* ToolbarMenu = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar.PlayToolBar");
-		{
-			FToolMenuSection& Section = ToolbarMenu->FindOrAddSection("PluginTools");
-			{
-				FToolMenuEntry& Entry = Section.AddEntry(FToolMenuEntry::InitToolBarButton(FTwoHeadUtilitiesCommands::Get().PluginAction));
-				Entry.SetCommandList(PluginCommands);
-			}
-		}
 	}
 }
 
