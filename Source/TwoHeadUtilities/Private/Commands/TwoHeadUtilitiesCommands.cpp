@@ -1,3 +1,5 @@
+// Copyright (c) 2026 InsaneDoggo. All rights reserved.
+
 #include "Commands/TwoHeadUtilitiesCommands.h"
 
 #define LOCTEXT_NAMESPACE "FTwoHeadUtilitiesModule"

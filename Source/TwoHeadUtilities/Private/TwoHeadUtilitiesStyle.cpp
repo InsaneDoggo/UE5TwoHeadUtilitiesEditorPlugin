@@ -1,3 +1,5 @@
+// Copyright (c) 2026 InsaneDoggo. All rights reserved.
+
 #include "TwoHeadUtilitiesStyle.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Styling/SlateStyleRegistry.h"

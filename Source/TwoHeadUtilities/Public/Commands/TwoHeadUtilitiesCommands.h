@@ -1,3 +1,5 @@
+// Copyright (c) 2026 InsaneDoggo. All rights reserved.
+
 #pragma once
 
 #include "Framework/Commands/Commands.h"

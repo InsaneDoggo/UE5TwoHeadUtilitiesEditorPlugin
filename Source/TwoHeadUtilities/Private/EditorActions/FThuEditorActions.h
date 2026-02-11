@@ -1,3 +1,5 @@
+// Copyright (c) 2026 InsaneDoggo. All rights reserved.
+
 #pragma once
 
 class FThuEditorActions
@@ -8,8 +10,6 @@ public:
 	
 	void PluginButtonClicked();
 	
-private:
-	void RegisterMenus();
-	
+private:	
 	TSharedPtr<FUICommandList> PluginCommands;	
 };

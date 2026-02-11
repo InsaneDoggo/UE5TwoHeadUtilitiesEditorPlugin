@@ -1,3 +1,5 @@
+// Copyright (c) 2026 InsaneDoggo. All rights reserved.
+
 #pragma once
 
 #include "Styling/SlateStyle.h"
@@ -14,6 +16,6 @@ public:
 	static FName GetStyleSetName();
 
 private:
-	static TSharedRef<class FSlateStyleSet> Create();
-	static TSharedPtr<class FSlateStyleSet> StyleInstance;
+	static TSharedRef<FSlateStyleSet> Create();
+	static TSharedPtr<FSlateStyleSet> StyleInstance;
 };
