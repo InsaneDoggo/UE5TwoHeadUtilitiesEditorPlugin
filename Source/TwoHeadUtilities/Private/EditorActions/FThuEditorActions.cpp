@@ -50,13 +50,9 @@ void FThuEditorActions::Deinitialize()
 
 void FThuEditorActions::OnAction_SelectHismParent()
 {
-	UE_LOG(LogTemp, Warning, TEXT("FThuEditorActions::OnAction_SelectHismParent"));
+	// UE_LOG(LogTemp, Warning, TEXT("FThuEditorActions::OnAction_SelectHismParent"));
 
 	if (!GEditor) return;
-
-	// Test Settings
-	UThuPluginEditorSettingsPage* SettingsPage = GetMutableDefault<UThuPluginEditorSettingsPage>();
-	UE_LOG(LogTemp, Warning, TEXT("SettingsPage: %s"), SettingsPage->bEnabled ? TEXT("Enabled") : TEXT("Disabled"));
 
 	UTypedElementSelectionSet* SelectionSet = GEditor->GetEditorSubsystem<ULevelEditorSubsystem>()->GetSelectionSet();
 	if (!SelectionSet)
@@ -96,17 +92,27 @@ void FThuEditorActions::OnAction_SelectHismParent()
 
 	if (!bFoundHismComponent)
 	{
+		// TODO: make setting to notify via UE Notifications System 
 		UE_LOG(LogTemp, Warning, TEXT("HierarchicalInstancedStaticMeshComponent wasn't found in selection set"));
 	}
+	
+	UThuPluginEditorSettingsPage* SettingsPage = GetMutableDefault<UThuPluginEditorSettingsPage>();
 
+	// UE_LOG(LogTemp, Warning, TEXT("bFocusOnActor: %s"), SettingsPage->bFocusOnActor ? TEXT("true") : TEXT("false"));
+	// UE_LOG(LogTemp, Warning, TEXT("bFocusInActiveViewportOnly: %s"), SettingsPage->bFocusInActiveViewportOnly ? TEXT("true") : TEXT("false"));
+	
 	if (ActorToSelect)
 	{
-		const FScopedTransaction Transaction(LOCTEXT("ClickingOnActor", "Clicking on Actor in Data Layer"));
+		const FScopedTransaction Transaction(LOCTEXT("ThuSelectingHismOwner", "Selecting owner of the selected HISM"));
 		GEditor->GetSelectedActors()->Modify();
 		GEditor->SelectNone(false, true);
 		GEditor->SelectActor(ActorToSelect, true,true, true);
 		GEditor->NoteSelectionChange();
-		// GEditor->MoveViewportCamerasToActor(*ActorToSelect, /*bActiveViewportOnly*/false);
+		
+		if (SettingsPage->bFocusOnActor)
+		{
+			GEditor->MoveViewportCamerasToActor(*ActorToSelect, SettingsPage->bFocusInActiveViewportOnly);			
+		}
 	}
 }
 

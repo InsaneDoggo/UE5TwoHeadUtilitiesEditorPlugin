@@ -15,9 +15,12 @@ class UThuPluginEditorSettingsPage : public UObject
 
 public:
 	UThuPluginEditorSettingsPage(const FObjectInitializer& Initializer);
-
-	UPROPERTY(config, EditAnywhere, Category=General, Meta=(ConfigRestartRequired=false, DisplayName="Test Bool"))
-	bool bEnabled;
+	
+	UPROPERTY(config, EditAnywhere, Category=General, Meta=(ConfigRestartRequired=false, DisplayName="Focus camera on found Actor"))
+	bool bFocusOnActor = false;
+	
+	UPROPERTY(config, EditAnywhere, Category=General, Meta=(ConfigRestartRequired=false, DisplayName="Focus camera in active viewport only", EditCondition = "bFocusOnActor"))
+	bool bFocusInActiveViewportOnly = true;
 };
 
 
