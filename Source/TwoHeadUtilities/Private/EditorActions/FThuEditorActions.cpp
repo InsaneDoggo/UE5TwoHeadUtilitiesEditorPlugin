@@ -1,7 +1,6 @@
 // Copyright (c) 2026 InsaneDoggo. All rights reserved.
 
 #include "FThuEditorActions.h"
-
 #include "LevelEditor.h"
 #include "LevelEditorSubsystem.h"
 #include "Selection.h"
@@ -9,6 +8,7 @@
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Elements/Framework/TypedElementSelectionSet.h"
 #include "Elements/SMInstance/SMInstanceElementData.h"
+#include "Logs/ThuLogs.h"
 #include "SettingsPage/ThuPluginEditorSettingsPage.h"
 
 #define LOCTEXT_NAMESPACE "FTwoHeadUtilitiesModule"
@@ -50,14 +50,12 @@ void FThuEditorActions::Deinitialize()
 
 void FThuEditorActions::OnAction_SelectHismParent()
 {
-	// UE_LOG(LogTemp, Warning, TEXT("FThuEditorActions::OnAction_SelectHismParent"));
-
 	if (!GEditor) return;
 
 	UTypedElementSelectionSet* SelectionSet = GEditor->GetEditorSubsystem<ULevelEditorSubsystem>()->GetSelectionSet();
 	if (!SelectionSet)
 	{
-		UE_LOG(LogTemp, Error, TEXT("SelectionSet is NULL"));
+		UE_LOG(TwoHeadUtilities, Error, TEXT("SelectionSet is NULL"));
 		return;
 	}
 
@@ -84,8 +82,8 @@ void FThuEditorActions::OnAction_SelectHismParent()
 		bFoundHismComponent = true;
 		auto* InstancedStaticMeshComponent = SMInstance.GetISMComponent();
 
-		UE_LOG(LogTemp, Warning, TEXT("Selected ISM Component: %s"), *InstancedStaticMeshComponent->GetName());
-		UE_LOG(LogTemp, Warning, TEXT("Selected ISM Parent: %s"), *InstancedStaticMeshComponent->GetOwner()->GetName());
+		UE_LOG(TwoHeadUtilities, Verbose, TEXT("Selected ISM Component: %s"), *InstancedStaticMeshComponent->GetName());
+		UE_LOG(TwoHeadUtilities, Verbose, TEXT("Selected ISM's Parent: %s"), *InstancedStaticMeshComponent->GetOwner()->GetName());
 
 		ActorToSelect = InstancedStaticMeshComponent->GetOwner();
 	}
@@ -93,13 +91,10 @@ void FThuEditorActions::OnAction_SelectHismParent()
 	if (!bFoundHismComponent)
 	{
 		// TODO: make setting to notify via UE Notifications System 
-		UE_LOG(LogTemp, Warning, TEXT("HierarchicalInstancedStaticMeshComponent wasn't found in selection set"));
+		UE_LOG(TwoHeadUtilities, Warning, TEXT("HierarchicalInstancedStaticMeshComponent wasn't found in selection set"));
 	}
 	
 	UThuPluginEditorSettingsPage* SettingsPage = GetMutableDefault<UThuPluginEditorSettingsPage>();
-
-	// UE_LOG(LogTemp, Warning, TEXT("bFocusOnActor: %s"), SettingsPage->bFocusOnActor ? TEXT("true") : TEXT("false"));
-	// UE_LOG(LogTemp, Warning, TEXT("bFocusInActiveViewportOnly: %s"), SettingsPage->bFocusInActiveViewportOnly ? TEXT("true") : TEXT("false"));
 	
 	if (ActorToSelect)
 	{
