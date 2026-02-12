@@ -18,7 +18,7 @@ After:
 
 ## Installation
 
-1. Download .zip from releases page
+1. Download TwoHeadUtilities.zip from [releases page](https://github.com/InsaneDoggo/UE5TwoHeadUtilitiesEditorPlugin/releases)
 2. Put content into `<Your Project>/Plugins/` dir
 3. Setup hotkeys: Editor Settings -> search for "TwoHead"
 	
